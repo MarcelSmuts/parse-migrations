@@ -15,7 +15,7 @@ async function createMigrationsTable (): Promise<void> {
       return
     }
 
-    console.error('ERROR', err)
+    console.error(err)
   }
 }
 

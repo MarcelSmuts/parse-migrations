@@ -15,11 +15,11 @@ function makeMigration (name: string) {
     fs.writeFileSync(
       `${projectFolder}/${dir}/${dateString}-${name}.js`,
       `
-  async function up () {}
+      async function up (ParseContext) {}
   
-  async function down () {}
+      async function down (ParseContext) {}
   
-  module.exports = { up, down }
+      module.exports = { up, down }
   `
     )
   } catch (err) {
