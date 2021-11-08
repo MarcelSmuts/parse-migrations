@@ -34,20 +34,24 @@ async function getMigrationsToRun (steps: number, migrations: string[]) {
 }
 
 async function runMigrationsDown (steps: number): Promise<void> {
-  console.info('Fetching database migrations')
-  const migrations = await getMigrationsFromDatabase()
+  try {
+    console.info('Fetching database migrations')
+    const migrations = await getMigrationsFromDatabase()
 
-  const migrationsToRun = await getMigrationsToRun(steps, migrations)
+    const migrationsToRun = await getMigrationsToRun(steps, migrations)
 
-  console.info(`Running ${migrationsToRun.length} migrations`)
+    console.info(`Running ${migrationsToRun.length} migrations`)
 
-  migrationsToRun.forEach(async migration => {
-    await migration.down(Parse)
+    migrationsToRun.forEach(async migration => {
+      await migration.down(Parse)
 
-    await updateMigrationsTable(migration.name)
-  })
+      await updateMigrationsTable(migration.name)
+    })
 
-  console.info(`Done running migrations.`)
+    console.info(`Done running migrations.`)
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 export default runMigrationsDown

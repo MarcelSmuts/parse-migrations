@@ -55,22 +55,26 @@ async function removeRunMigrations (migrations: string[]) {
 }
 
 async function runMigrationsUp (): Promise<void> {
-  await createMigrationsTable()
+  try {
+    await createMigrationsTable()
 
-  console.info('Fetching database migrations')
-  const migrations = await getMigrationsFromDatabase()
+    console.info('Fetching database migrations')
+    const migrations = await getMigrationsFromDatabase()
 
-  const migrationsToRun = await removeRunMigrations(migrations)
+    const migrationsToRun = await removeRunMigrations(migrations)
 
-  console.info(`Found ${migrationsToRun.length} migrations`)
+    console.info(`Found ${migrationsToRun.length} migrations`)
 
-  migrationsToRun.forEach(async migration => {
-    await migration.up(Parse)
+    migrationsToRun.forEach(async migration => {
+      await migration.up(Parse)
 
-    await updateMigrationsTable(migration.name)
-  })
+      await updateMigrationsTable(migration.name)
+    })
 
-  console.info(`Done running migrations.`)
+    console.info(`Done running migrations.`)
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 export default runMigrationsUp

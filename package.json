@@ -1,8 +1,9 @@
 {
     "name": "parse-migrations",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "",
     "author": "Marcel Smuts",
+    "email": "marcelsmuts@gmail.com",
     "main": "index.js",
     "files": [
         "lib/**/*"
@@ -20,5 +21,16 @@
         "esm": "^3.2.25",
         "install": "^0.13.0",
         "typescript": "^4.4.4"
-    }
+    },
+    "keywords": ["parse", "parse-migrations", "migrations"],
+    "homepage": "https://github.com/MarcelSmuts/parse-migrations",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MarcelSmuts/parse-migrations"
+    },
+    "bugs": {
+        "url" : "https://github.com/MarcelSmuts/parse-migrations/issues",
+        "email" : "marcelsmuts@gmail.com"
+    },
+    "license": "MIT"
 }
