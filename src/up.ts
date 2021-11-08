@@ -41,8 +41,6 @@ async function removeRunMigrations (migrations: string[]) {
     }
   )
 
-  migrationFileNames.sort((one, two) => (one > two ? -1 : 1))
-
   migrationFileNames.forEach(fileName => {
     if (migrations.indexOf(fileName) > -1) {
       return
@@ -66,15 +64,20 @@ async function runMigrationsUp (): Promise<void> {
     console.info('Fetching database migrations')
     const migrations = await getMigrationsFromDatabase()
 
-    const migrationsToRun = await removeRunMigrations(migrations)
+    const migrationsToRun = (await removeRunMigrations(migrations)).sort(
+      (a, b) => (a.name > b.name ? 1 : -1)
+    )
 
-    console.info(`Found ${migrationsToRun.length} migrations`)
+    console.info(
+      `Found ${migrationsToRun.length} migrations: `,
+      migrationsToRun.map(x => x.name)
+    )
 
-    migrationsToRun.forEach(async migration => {
-      await migration.up(Parse)
-
-      await updateMigrationsTable(migration.name)
-    })
+    for (let index = 0; index < migrationsToRun.length; index++) {
+      const migrationToRun = migrationsToRun[index]
+      await migrationToRun.up(Parse)
+      await updateMigrationsTable(migrationToRun.name)
+    }
 
     console.info(`Done running migrations.`)
   } catch (err) {

@@ -2,11 +2,21 @@ import fs from 'fs'
 
 const dir = '/migrations'
 
+function padString (str: string) {
+  return str.padStart(2, '0')
+}
+
 function makeMigration (name: string) {
   try {
     const projectFolder = process.cwd()
     const date = new Date()
-    const dateString = `${date.getFullYear()}${date.getMonth()}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`
+    const year = date.getFullYear()
+    const month = padString(date.getMonth().toString())
+    const day = padString(date.getDate().toString())
+    const hours = padString(date.getHours().toString())
+    const minutes = padString(date.getMinutes().toString())
+    const seconds = padString(date.getSeconds().toString())
+    const dateString = `${year}${month}${day}${hours}${minutes}${seconds}`
 
     if (!fs.existsSync(`${projectFolder}/${dir}`)) {
       fs.mkdirSync(`${projectFolder}/${dir}`)

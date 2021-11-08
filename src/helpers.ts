@@ -27,10 +27,7 @@ function logPotentialParseError (err: unknown): Boolean {
 async function getMigrationsFromDatabase (): Promise<string[]> {
   const migrationsQuery = new Parse.Query('migrations')
   let dbMigrations = await migrationsQuery.select('name').find()
-  return dbMigrations
-    .map(x => JSON.parse(JSON.stringify(x)).name)
-    .sort()
-    .reverse()
+  return dbMigrations.map(x => JSON.parse(JSON.stringify(x)).name)
 }
 
 export {

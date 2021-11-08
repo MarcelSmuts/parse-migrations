@@ -16,9 +16,10 @@ async function updateMigrationsTable (name: string): Promise<void> {
 }
 
 async function getMigrationsToRun (steps: number, migrations: string[]) {
+  const sortedMigrations = migrations.sort((a, b) => (a < b ? 1 : -1))
   const filteredMigrations = []
   for (let index = 0; index < steps; index++) {
-    const migration = migrations.pop()
+    const migration = sortedMigrations.shift()
     if (migration) {
       filteredMigrations.push(migration)
     }
@@ -42,15 +43,20 @@ async function runMigrationsDown (steps: number): Promise<void> {
     console.info('Fetching database migrations')
     const migrations = await getMigrationsFromDatabase()
 
-    const migrationsToRun = await getMigrationsToRun(steps, migrations)
+    const migrationsToRun = (await getMigrationsToRun(steps, migrations)).sort(
+      (a, b) => (a.name < b.name ? 1 : -1)
+    )
 
-    console.info(`Running ${migrationsToRun.length} migrations`)
+    console.info(
+      `Running ${migrationsToRun.length} migrations: `,
+      migrationsToRun.map(x => x.name)
+    )
 
-    migrationsToRun.forEach(async migration => {
-      await migration.down(Parse)
-
-      await updateMigrationsTable(migration.name)
-    })
+    for (let index = 0; index < migrationsToRun.length; index++) {
+      const migrationToRun = migrationsToRun[index]
+      await migrationToRun.down(Parse)
+      await updateMigrationsTable(migrationToRun.name)
+    }
 
     console.info(`Done running migrations.`)
   } catch (err) {
