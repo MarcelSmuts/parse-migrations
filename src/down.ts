@@ -1,4 +1,8 @@
-import { IMigration, getMigrationsFromDatabase } from './helpers'
+import {
+  IMigration,
+  getMigrationsFromDatabase,
+  logPotentialParseError
+} from './helpers'
 import Parse from 'parse/node'
 
 async function updateMigrationsTable (name: string): Promise<void> {
@@ -50,7 +54,9 @@ async function runMigrationsDown (steps: number): Promise<void> {
 
     console.info(`Done running migrations.`)
   } catch (err) {
-    console.error(err)
+    if (!logPotentialParseError(err)) {
+      console.error(err)
+    }
   }
 }
 

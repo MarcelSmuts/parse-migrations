@@ -1,6 +1,11 @@
 const Parse = require('parse/node')
 const fs = require('fs')
-import { IParseError, IMigration, getMigrationsFromDatabase } from './helpers'
+import {
+  IParseError,
+  IMigration,
+  getMigrationsFromDatabase,
+  logPotentialParseError
+} from './helpers'
 
 async function createMigrationsTable (): Promise<void> {
   try {
@@ -15,7 +20,7 @@ async function createMigrationsTable (): Promise<void> {
       return
     }
 
-    console.error(err)
+    throw err
   }
 }
 
@@ -73,7 +78,9 @@ async function runMigrationsUp (): Promise<void> {
 
     console.info(`Done running migrations.`)
   } catch (err) {
-    console.error(err)
+    if (!logPotentialParseError(err)) {
+      console.error(err)
+    }
   }
 }
 
